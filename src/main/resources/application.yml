@@ -1,0 +1,52 @@
+server:
+  port: 8838
+
+spring:
+  resources:
+    static-locations: classpath:/transmit/
+  application:
+    name: file-server
+  datasource:
+    url: jdbc:mysql://192.168.135.140:3306/filesystem?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5000MB
+      max-request-size: 5000MB
+  profiles:
+    include:
+      - redis
+file:
+  type: MINIO
+  storagePath: D:/chunks
+  minio:
+    bucketName: images
+    endpoint: http://10.11.24.135:9002/
+    accessKeyId: minioadmin
+    accessKeySecret: minioadmin
+
+#file:
+#  type: FAST_DFS
+#  storagePath: D:/chunks
+#  uriPrefix: http://10.11.24.135:8888/
+
+#FAST_DFS配置
+#fdfs:
+#  soTimeout: 1500
+#  connectTimeout: 600
+#  thumb-image:
+#    width: 150
+#    height: 150
+#  tracker-list:
+#    - 10.11.24.135:22122
+#  pool:
+#    #从池中借出的对象的最大数目
+#    max-total: 153
+#    max-wait-millis: 102
+#    jmx-name-base: 1
+#    jmx-name-prefix: 1
+
+
