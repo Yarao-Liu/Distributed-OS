@@ -1,17 +1,18 @@
 package com.github.mrliu.storage.service.impl;
 
+import com.github.mrliu.storage.constant.EncipherEnum;
 import com.github.mrliu.storage.constant.FileConstants;
 import com.github.mrliu.storage.constant.FileStorageType;
+import com.github.mrliu.storage.encipher.EncipherFactory;
 import com.github.mrliu.storage.entity.po.FileDataEntity;
-import com.github.mrliu.storage.processor.UploadProcessor;
-import com.github.mrliu.storage.properties.StorageProperties;
-import com.github.mrliu.storage.strategy.file.FileStrategy;
-import com.github.mrliu.storage.processor.FileProcessor;
 import com.github.mrliu.storage.entity.vo.FileDeleteVo;
 import com.github.mrliu.storage.mapper.FileDataMapper;
-import com.github.mrliu.storage.service.FileService;
-import com.github.mrliu.storage.encipher.Base64Encipher;
 import com.github.mrliu.storage.processor.DownloadProcessor;
+import com.github.mrliu.storage.processor.FileProcessor;
+import com.github.mrliu.storage.processor.UploadProcessor;
+import com.github.mrliu.storage.properties.StorageProperties;
+import com.github.mrliu.storage.service.FileService;
+import com.github.mrliu.storage.strategy.file.FileStrategy;
 import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
@@ -144,7 +145,8 @@ public class FileServiceImpl implements FileService {
     @Nullable
     private FileDataEntity base64SensitiveUpload(MultipartFile file) {
         try {
-            final String base64String = Base64Encipher.fileToBase64(file);
+            EncipherFactory factory = EncipherFactory.newInstance(EncipherEnum.BASE64);
+            String base64String = factory.encrypt(file);
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
             final String fileMd5 = fileProcessor.getFileMd5(file);
             final byte[] bytes = base64String.getBytes(StandardCharsets.UTF_8);
@@ -190,7 +192,8 @@ public class FileServiceImpl implements FileService {
             //字节数组转字符串
             String fileStr = new String(bytes);
             //字符串解码为字节数组
-            bytes = Base64Encipher.stringToByte(fileStr);
+            EncipherFactory factory = EncipherFactory.newInstance(EncipherEnum.BASE64);
+            bytes = factory.decrypt(fileStr);
 
             final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
             IOUtils.copy(stream, response.getOutputStream());
