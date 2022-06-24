@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @MapperScan(basePackages = "com.github.mrliu.storage.mapper")
 @SpringBootApplication
-public class FileServerApplication {
+public class FastStorageApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(FileServerApplication.class, args);
+        SpringApplication.run(FastStorageApp.class, args);
     }
 
 }
